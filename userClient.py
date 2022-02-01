@@ -36,7 +36,6 @@ import getpass
 
 import base64
 
-
 import socket as s
 #############################################################################
 #                                 menu                                      #
@@ -50,50 +49,14 @@ clearConsole = lambda: os.system('cls')
 #this is the main menu of the quiz app
 #purpose of this menu is to provide the user with a menu to choose from
 
-def menu(localrowid):
-    #open connection to server using socket
-    
-    print('\n\n+==================================+')
-    print(colors.bold, colors.fg.cyan, '      Welcome to The Quiz', colors.reset)
-    print(' ________  ___  ___  ___   ________')     
-    print('| \  __  \|\  \|\  \|\  \ |\_____  \ ')    
-    print(' \ \ \ |\ \ \  \\ \\  \ \  \ \|___/  /|')   
-    print('  \ \ \ \\\ \ \  \\ \\  \ \  \    /  / /   ')
-    print('   \ \ \_\\\ \ \  \\_\\  \ \  \  /  /_/__')  
-    print('    \ \_____ \ \_______\ \__\ |\_______\ ')
-    print('     \|___|\__\|_______|\|__| \|_______|')
-    print('          \|__|')
-    print('+==================================+\n')    
-    print('1. Login')
-    print('2. Register')
-    print('3. Forget password')
-    print('\n<ENTER> to Exit')
+#open connection to server using socket
+
+while True:
+    print(s.recv(1024).decode())
+    msg = input('> ')
+    s.send((msg).encode())
 
 # Get the user's choice to pass to the appropriate function.
-    try:
-        choice = int(input('Please enter your choice: '))
-        if choice == 1:
-            # use socket to send login request to server
-            s.send('LOGIN'.encode())
-            # receive login response from server
-            login(localrowid)
-        elif choice == 2:
-            clearConsole()
-            # ask for Attempts from the server
-
-            registerUser(localrowid)
-        elif choice == 3:
-            clearConsole()
-            forgetPassword(localrowid)
-        else:
-            clearConsole()
-            menu(localrowid)
-# if the user enters a non-integer (eg: spacebar) then program exits.
-    except ValueError:
-        print('Goodbye...')
-
-        os._exit(0)
-    menu(localrowid)
 
 # The acls are the permissions that the user has on the system.
 # The acls are stored in a string of length 8.
@@ -320,11 +283,8 @@ def login(localrowid):
     '''
     Purpose of this function is to login the user.
     '''
-    print('+==================================+')
-    print(colors.bold, colors.fg.cyan, '\t     Login Menu', colors.reset)
-    print('+==================================+')
-    #declare variables
-        
+    menu = s.recv(1024).decode()
+    print(menu)
     try:
         print('\n<ENTER> to back')
         username = str(input('Please enter your username: '))
@@ -1004,4 +964,4 @@ class colors:
 		lightgrey='\033[47m'
 
 # IF YOU WANT TO RUN THE USER SCRIPT WITHIN THE USER SCRIPT, UNCOMMENT THE FOLLOWING LINE
-menu(localrowid = uuid.uuid4())
+# menu(localrowid = uuid.uuid4())
