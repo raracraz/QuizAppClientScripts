@@ -76,7 +76,6 @@ try:
 
             if theMessage == 'exit':
                 break
-            
             if MessageType == 'text':
                 menuid = theMessage
 
@@ -84,14 +83,19 @@ try:
                 # use re to check if email is valid
                 if not re.match(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$', theMessage):
                     print("Error: Email is not valid")
+                    menuid = 0
+                    theMessage = '0'
                     continue
                 else:
                     pass
+            
+            
+
 
                 
-                s.send(formatParser(menuid, theMessage).encode())
+            s.send(formatParser(menuid, theMessage).encode())
         except:
-            print("Error: Server data is not in JSON format")
+            print("Error: Serverrr data is not in JSON format")
 except:
     print("Error: cannot connect to server")
     s.close()
