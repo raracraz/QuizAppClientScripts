@@ -70,9 +70,10 @@ try:
             
             if theMessage == '':
                 theMessage = '99'
-                menuid -= 1
+
             elif theMessage == 'exit':
                 break
+            
             s.send(formatParser(menuid, theMessage).encode())
         except:
             print("Error: data is not in JSON format")
