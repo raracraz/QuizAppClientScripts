@@ -32,16 +32,17 @@ import json
 #                               functions                                   #
 #############################################################################
 #
+
 def receiveParser(data):
     try:
         jsonData = json.loads(data)
         return jsonData
     except:
-        print("Error: data is not in JSON format")
+        print("Error: Server data is not in JSON format")
         return False
 
-def formatParser(menuid, theMessage, minLength=1,maxLength=512,minVal=1,maxVal=99,mask='*'):
-    jsonStr = {'menuid': menuid, 'message': theMessage, 'minLength': minLength, 'maxLength': maxLength, 'minVal': minVal, 'maxVal': maxVal, 'mask': mask,}
+def formatParser(menuid, theMessage, minLength=1,maxLength=512,minVal=1,maxVal=99):
+    jsonStr = {'menuid': menuid, 'message': theMessage, 'minLength': minLength, 'maxLength': maxLength, 'minVal': minVal, 'maxVal': maxVal,}
     return json.dumps(jsonStr)
 #############################################################################
 #                                 menu                                      #
@@ -49,7 +50,7 @@ def formatParser(menuid, theMessage, minLength=1,maxLength=512,minVal=1,maxVal=9
 # open connection to server using socket
 try:
     s = s.socket(s.AF_INET, s.SOCK_STREAM)
-    s.connect(('localhost', 99))
+    s.connect(('localhost', 3000))
     #Purpose of this lambda function is to clear terminal after each input
     clearConsole = lambda: os.system('cls')
 
@@ -66,17 +67,31 @@ try:
             displayPrompt = jsonData['prompt']
             menuid = jsonData['menuid']
             MessageType = jsonData['type']
-            theMessage = input(displayMessage+"\n"+displayPrompt)
             
+            theMessage = input(displayMessage+"\n"+displayPrompt)
+        
             if theMessage == '':
-                theMessage = '99'
+                menuid = 0
+                theMessage = '0'
 
-            elif theMessage == 'exit':
+            if theMessage == 'exit':
                 break
             
-            s.send(formatParser(menuid, theMessage).encode())
+            if MessageType == 'text':
+                menuid = theMessage
+
+            if MessageType == 'email':
+                # use re to check if email is valid
+                if not re.match(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$', theMessage):
+                    print("Error: Email is not valid")
+                    continue
+                else:
+                    pass
+
+                
+                s.send(formatParser(menuid, theMessage).encode())
         except:
-            print("Error: data is not in JSON format")
+            print("Error: Server data is not in JSON format")
 except:
     print("Error: cannot connect to server")
     s.close()
